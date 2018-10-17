@@ -3,7 +3,6 @@ const express = require('express');
 const passport = require('passport');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
-
 const config = require('../config');
 const router = express.Router();
 
@@ -31,4 +30,4 @@ router.post('/refresh', jwtAuth, (req, res) => {
   res.json({authToken});
 });
 
-module.exports = {router};
+module.exports = router;

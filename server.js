@@ -1,26 +1,20 @@
-'use strict';
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+const { PORT } = require('./config');
+const { MONGODB_URI } = require('./config');
 const morgan = require('morgan');
 const passport = require('passport');
-
-// Here we use destructuring assignment with renaming so the two variables
-// called router (from ./users and ./auth) have different names
-// For example:
-// const actorSurnames = { james: "Stewart", robert: "De Niro" };
-// const { james: jimmy, robert: bobby } = actorSurnames;
-// console.log(jimmy); // Stewart - the variable name is jimmy, not james
-// console.log(bobby); // De Niro - the variable name is bobby, not robert
-const { router: usersRouter } = require('./users');
-const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
-
+const localStrategy = require('./passport/strategies');
+const jwtStrategy = require('./passport/jwt');
+const authRouter = require('./routes/authRouter');
+const userRouter = require('./routes/userRouter');
+const equationRouter = require('./routes/equationRouter');
+const User = require('./models/userModel');
 mongoose.Promise = global.Promise;
 
-const { PORT, DATABASE_URL } = require('./config');
 
 const app = express();
-
 // Logging
 app.use(morgan('common'));
 
@@ -38,8 +32,9 @@ app.use(function (req, res, next) {
 passport.use(localStrategy);
 passport.use(jwtStrategy);
 
-app.use('/api/users/', usersRouter);
-app.use('/api/auth/', authRouter);
+app.use('/api/users', userRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/equation', equationRouter);
 
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
@@ -58,41 +53,19 @@ app.use('*', (req, res) => {
 // assumes runServer has run and set `server` to a server object
 let server;
 
-function runServer(databaseUrl, port = PORT) {
-
-  return new Promise((resolve, reject) => {
-    mongoose.connect(databaseUrl, err => {
-      if (err) {
-        return reject(err);
-      }
-      server = app.listen(port, () => {
-        console.log(`Your app is listening on port ${port}`);
-        resolve();
-      })
-        .on('error', err => {
-          mongoose.disconnect();
-          reject(err);
-        });
-    });
-  });
-}
-
-function closeServer() {
-  return mongoose.disconnect().then(() => {
-    return new Promise((resolve, reject) => {
-      console.log('Closing server');
-      server.close(err => {
-        if (err) {
-          return reject(err);
-        }
-        resolve();
-      });
-    });
-  });
-}
-
 if (require.main === module) {
-  runServer(DATABASE_URL).catch(err => console.error(err));
+  mongoose.connect(MONGODB_URI, { useNewUrlParser:true })
+    .catch(err => {
+      console.error(`ERROR: ${err.message}`);
+      console.error('\n === Did you remember to start `mongod`? === \n');
+      console.error(err);
+    });
+
+  app.listen(PORT, function () {
+    console.info(`Server listening on ${this.address().port}`);
+  }).on('error', err => {
+    console.error(err);
+  });
 }
 
-module.exports = { app, runServer, closeServer };
+module.exports = app;

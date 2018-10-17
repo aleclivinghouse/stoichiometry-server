@@ -1,11 +1,8 @@
 'use strict';
 const express = require('express');
 const bodyParser = require('body-parser');
-
-const {User} = require('./models');
-
+const User = require('../models/userModel');
 const router = express.Router();
-
 const jsonParser = bodyParser.json();
 
 // Post to register a new user
@@ -144,4 +141,4 @@ router.get('/', (req, res) => {
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
 
-module.exports = {router};
+module.exports = router;
