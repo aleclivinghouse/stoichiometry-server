@@ -16,18 +16,10 @@ const Side = require('../solvers/classes').Side;
 const prettyJSON = function(obj) { console.log(JSON.stringify(obj, null, 2)); }
 
 router.post('/', (req, res, next)=>{
-  let weight = {};
-  let weightTwo = {};
-  weight.amount = 85;
-  weight.whichMolecule = 1;
-  weightTwo.amount = 85;
-  weightTwo.whichMolecule = 2;
-  let theWeight = [];
-  theWeight.push(weight);
-  theWeight.push(weightTwo);
+  let theWeight = [{amount: 85, whichMolecule: 1}, {amount: 85, whichMolecule: 2}];
+  let newEquation = {};
+  const equationString = 'B5H9+O2=B2O3+H2O';
 
-  // const equationString = 'B5H9+O2=B2O3+H2O';
-  const equationString = 'Fe2O3+Al=Al2O3+Fe';
   const holyShit = solveFromForm(theWeight, equationString, periodicTable);
   console.log('below is holy shit');
   console.log(prettyJSON(holyShit));
@@ -35,29 +27,67 @@ router.post('/', (req, res, next)=>{
   console.log('below us the molecules array');
   console.log(moleculesArray);
 
-  let newEquation = {};
-  newEquation.name=equationString;
-  newEquation.molecules=[];
-  for(let molecule of moleculesArray){
-    newEquation.molecules.push(molecule);
-  }
+  // for(let molecule of moleculesArray){
+  //   Molecule.create(molecule).then(result => {
+  //     console.log('below is the first result');
+  //     console.log(result);
+  //      return result;
+  //   }).then(result => {
+  //     console.log('this is the 2nd result');
+  //     console.log(result);
+  //     newEquation.molecules.insert(result);
+  //   });
+  // }
+  Molecule.insertMany(moleculesArray).then((result) => {
+    console.log('below is insert many');
+    console.log(result);
+    return result;
+  }).then((result)=>{
+     newEquation.molecules = result;
+     newEquation.name = equationString;
+     return Equation.create(newEquation)
+   }).then((results) =>{
+     res.json(results);
+   }).catch((err) =>{
+       console.log(err);
+       res.status(404).json({ err: 'was not created,' })
+    });
+ });
 
-  Equation.create(newEquation).then(result =>{
-  console.log('below is the new note we created ');
-  console.log(result);
-  res.json(result);
-})
-.catch(err =>
-    res.status(404).json({ err: 'was not created,' })
-     );
-  });
+
+
+
+  // console.log('below is the official molecules array');
+  // console.log(theOfficialMoleculesArray);
+
+
+  // if(moleculesArray > 0){
+  // for(let molecule of theOfficialMoleculesArray){
+  //   console.log('below are the molecules in the for loop');
+  //   console.log(molecule);
+  //   newEquation.molecules.push(molecule);
+  // }
+// }
+//   console.log('below are the molecules pushed in ');
+//   console.log(newEquation.molecules);
+//
+//   Equation.create(newEquation).then(result =>{
+//   console.log('below is the new note we created ');
+//   console.log(result);
+//   res.json(result);
+// })
+// .catch((err) =>{
+//     console.log(err);
+//     res.status(404).json({ err: 'was not created,' })
+//     });
+//   });
 
 
 router.get('/', (req, res, next) => {
   let filter = {};
   // const userId = req.user.id;
   // filter.userId = userId;
-
+ //you have to pass in the filter to the find function
   console.log('Get All Equations');
   Equation.find().populate('molecules')
   .then(results=>{
@@ -76,7 +106,7 @@ router.delete('/:id', (req, res, next) => {
   .catch(err =>
       res.status(404).json({ err: 'was not able to delete' })
     );
-  console.log('Delete a Note');
+  console.log('Delete an Equation');
   });
 
 

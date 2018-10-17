@@ -174,7 +174,7 @@ const getMoleculesArray = function(equation){
          }
          let map = {};
          map.name = str;
-         map.weight = parseInt(molecule.weight);
+         map.weight = molecule.weight;
          arr.push(map);
        }
      }

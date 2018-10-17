@@ -3,8 +3,7 @@ const bcrypt = require('bcryptjs');
 
 const moleculeSchema = new mongoose.Schema({
   name: {type: String, required: true},
-  weight: {type: Number, default: 0},
-  whichMolecule: {type: Number, default: 0}
+  weight: {type: Number, default: 0}
 });
 
 moleculeSchema.set('timestamps', true);
