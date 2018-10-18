@@ -136,7 +136,8 @@ const solveNext = function(equationsToSolve){
   } //foreach end
 };
 
-
+//BUG try using GCD instead
+//https://www.w3resource.com/javascript-exercises/javascript-math-exercise-9.php
 const findLCM = function(A) {
     var n = A.length, a = Math.abs(A[0]);
     for (var i = 1; i < n; i++){
@@ -166,7 +167,7 @@ const getMoleculesArray = function(equation){
       if (equation[side] instanceof Side){
       for(let molecule of equation[side].molecules){
          let str = '';
-         str += molecule.coefficent;
+         // str += molecule.coefficent;
          for(let atom of molecule.atoms){
            str += atom.name;
            str += atom.subscript;

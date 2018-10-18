@@ -18,7 +18,7 @@ moleculeSchema.set('toObject', {
 const equationSchema = new mongoose.Schema({
   name: {type: String, required: true},
   molecules: [moleculeSchema],
-  // userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User'}
 });
 equationSchema.set('timestamps', true);
 equationSchema.set('toObject', {
