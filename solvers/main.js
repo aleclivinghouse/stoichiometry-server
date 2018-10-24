@@ -27,7 +27,11 @@ const balance = function(map){
  let coefficentObjects = createCoefficentObjects(map);
  let values = Object.values(map);
  let firstLetter = findFirstLetter(map);
+ console.log('this is first letter');
+ console.log(firstLetter);
  let equationsToSolve = setLetterToOne(values, firstLetter);
+ console.log('this is equations to solve');
+ console.log(equationsToSolve);
  let newCoefficentObjects = setCoefficentObjectOne(coefficentObjects, firstLetter);
  let i = 0;
  let final = balanceRest(newCoefficentObjects, equationsToSolve, i);
@@ -39,6 +43,8 @@ const balanceRest = function(theCoefficentObjects, theEquationsToSolve, i){
     return theCoefficentObjects;
   }
  // this SHOULD Return and equation
+  // console.log('below are the equations to solve');
+  // console.log(theEquationsToSolve);
    equationToSolveNext = solveNext(theEquationsToSolve);
    let answer = solve(equationToSolveNext);
    let coefficentObjects2 = setCoefficentObjectValue(theCoefficentObjects, answer.letter, answer.value);
@@ -101,6 +107,8 @@ function dynamicSort(property) {
 //////////////////////////////
 ////////////////////////////
 const solve = function(solveNext){
+  console.log('below is solveNext');
+  console.log(solveNext);
   let lowerCaseRegex = /[a-z]/;
   let capitalRegex = /[A-Z]/;
   let numRegex = /[0-9]/;
@@ -108,9 +116,11 @@ const solve = function(solveNext){
 
   //find the letter in the string
   for(let i = 0; i < solveNext.length; i++){
+    if(solveNext !== undefined){
     if(lowerCaseRegex.test(solveNext[i])===true){
       letter += solveNext[i];
     }
+   }
   }
   let eq = algebra.parse(solveNext);
   let theAnswer = eq.solveFor(letter);
@@ -160,8 +170,6 @@ const setCoefficents = function(object, values){
 }
 
 const getMoleculesArray = function(equation){
-  console.log('this comes into get moleCulesArray');
-  console.log(prettyJSON(equation));
   let arr = [];
     for(let side in equation){
       if (equation[side] instanceof Side){
@@ -209,8 +217,8 @@ const finalSolve = function(thingy, weights){
   let theLCM = findLCM(arrLCM);
   let theNewValues=finalValues(mapLCM, theLCM);
   let theNewEquation = setCoefficents(next, theNewValues);
-  console.log('below is what finalSolve returns');
-  console.log(prettyJSON(theNewEquation));
+  // console.log('below is what finalSolve returns');
+  // console.log(prettyJSON(theNewEquation));
   return theNewEquation;
 }
 
@@ -240,30 +248,32 @@ const finalSolve = function(thingy, weights){
         coefficentOfFirst = molecule.coefficent;
         let oneMole = findAtomicMass(periodicTable, molecule);
         molesOfFirst = weight.amount/oneMole;
-        // console.log('this is the weight amount');
-        // console.log(weight.amount);
         totalWeight += weight.amount;
+        }
       }
     }
+  }
+  for(let side in equation){
+    if (equation[side] instanceof Side){
     for(let molecule of equation[side].molecules){
+      console.log('this is he molecule');
+      console.log(molecule);
       if(molecule.weight === null && flag === true){
         coefficentOfSecond = molecule.coefficent;
+        console.log('this is the coefficent of first ');
+        console.log(coefficentOfFirst);
+        console.log('this is the coefficent of second');;
+        console.log(coefficentOfSecond);
         let ratio = new Fraction(coefficentOfSecond, coefficentOfFirst);
         howManyMolesOfSecond = molesOfFirst * ratio;
         massOfSecond = findAtomicMass(periodicTable, molecule);
         answer = howManyMolesOfSecond * massOfSecond;
         molecule.weight = answer;
-        // console.log('below is the molecule weight');
-        // console.log(molecule.weight);
         totalWeight += answer;
-        // newEquation = equation;
+        }
       }
-      // console.log('this is the weight ' + molecule.weight);
     }
   }
-
-  // console.log('this is the count ' + count);
-   }
    let newCount = count+1;
    flag = true;
   return getMoleAmount(weight, equation, periodicTable, totalCount, newCount, totalWeight, flag);
@@ -281,15 +291,6 @@ const getTotalCount = function(equation){
  }
   return count;
 }
-
-// const solveStoich = function(equation, periodicTable, weight, counts){
-//   let answers = [];
-//     let rest = getMoleAmount(equation, periodicTable, counts);
-//     answers.push(rest);
-//
-//   //get the answer with the smallest number of weight;
-//   return answers;
-// }
 
 const findAtomicMass = function(periodicTable, molecule){
   const coefficent = molecule.coefficent;
@@ -315,15 +316,26 @@ const solveFromForm = function(theWeight, equationString, periodicTable){
   const finalAnswerStoich = getMoleAmount(weight, toStoich, periodicTable, theCount);
   let mapToAppend = {};
   mapToAppend.totalWeight = finalAnswerStoich.totalWeight;
+  console.log('this is the total weight in map to append');
+  console.log(mapToAppend.totalWeight);
   mapToAppend.finalEquation = finalAnswerStoich;
-  // console.log('this is our answer');
-  // console.log(finalAnswerStoich);
   weightsArray.push(mapToAppend);
   }
+
+  for(let weight of weightsArray){
+    console.log('below is the totalWeight');
+    console.log(weight.totalWeight);
+  }
   let lowestAnswer = weightsArray.sort((obj1, obj2) => {
-    return obj1.totalWeight - obj2.totalWeight;
+    return parseInt(obj1.totalWeight) - parseInt(obj2.totalWeight);
   });
-  return lowestAnswer[0];
+  console.log('below is the lowest answer');
+  for(let answer of lowestAnswer){
+    console.log(answer.totalWeight);
+  }
+  console.log('below is what it returns');
+  console.log(lowestAnswer[0]);
+  return lowestAnswer[lowestAnswer.length-1];
 }
 
 // let weight = {};

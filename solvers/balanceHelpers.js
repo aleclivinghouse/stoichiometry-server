@@ -49,8 +49,9 @@ const setLetterToOne = function(equations, letter){
   let lowerCaseRegex = /[a-z]/;
   let numRegex = /[0-9]/;
   let newEquations = [];
-  for(equation of equations){
-
+  for(let equation of equations){
+    console.log('below is the equation in set letter to one');
+    console.log(equation);
     for(let i = 0; i < equation.length; i++){
       if(numRegex.test(equation[i])===true && equation[i+1]===letter && numRegex.test(equation[i+2])===true){
           equation = equation.replace(letter, '*1*');
