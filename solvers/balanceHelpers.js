@@ -27,43 +27,57 @@ const createCoefficentObjects = function(theMap){
 const findFirstLetter = function(theMap){
   let lowerCaseRegex = /[a-z]/;
   let found = false;
-  let letters = [];
+  let theLetter;
   let equations = Object.values(theMap);
-      while(found === false){
       for(let equation of equations){
+        let letters = [];
          for(let i=0; i < equation.length; i++){
            if(lowerCaseRegex.test(equation[i])===true){
               letters.push(equation[i]);
            }
          }
-         if(letters.length < 3){
+         // console.log('this is letters length   ' + letters.length);
+         if(letters.length === 2){
            theLetter = letters[0];
            found = true;
          }
-         return theLetter;
+         // console.log('this is what findFirstLetter is returning');
+         // console.log(theLetter);
       } //foreach end
-    } //while end
+      return theLetter;
 }
 
 const setLetterToOne = function(equations, letter){
+  // console.log('this is the letter in set letter to one');
+  // console.log(letter);
   let lowerCaseRegex = /[a-z]/;
   let numRegex = /[0-9]/;
   let newEquations = [];
   for(let equation of equations){
-    console.log('below is the equation in set letter to one');
-    console.log(equation);
+    // console.log('below is the equation in set letter to one');
+    // console.log(equation);
+    //1c=2e
     for(let i = 0; i < equation.length; i++){
       if(numRegex.test(equation[i])===true && equation[i+1]===letter && numRegex.test(equation[i+2])===true){
           equation = equation.replace(letter, '*1*');
+          // console.log('here is the equation with the one added');
+          // console.log(equation);
+
          newEquations.push(equation);
       } else if(numRegex.test(equation[i])===true && equation[i+1]===letter && numRegex.test(equation[i+2])===false){
           equation = equation.replace(letter, '*1');
+          // console.log('here is the equation with the one added');
+          // console.log(equation);
+
       } else if(numRegex.test(equation[i])===false && equation[i+1]===letter && numRegex.test(equation[i+2])===true){
         equation = equation.replace(letter, '1*');
+        // console.log('here is the equation with the one added');
+        // console.log(equation);
       } else {
         equation.replace(letter, '1');
       }
     }
+
     newEquations.push(equation);
 
   }

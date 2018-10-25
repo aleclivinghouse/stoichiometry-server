@@ -24,14 +24,20 @@ const createEquations = require('./balanceHelpers').createEquations;
 //////////////////////////////////////////////////////////////////////
 
 const balance = function(map){
+  // console.log('this is the map coming into balance');
+  // console.log(map);
  let coefficentObjects = createCoefficentObjects(map);
+ // console.log('these are the coefficent obhects');
+ // console.log(coefficentObjects);
  let values = Object.values(map);
+ // console.log('these are the values that go into find first letter');
+ // console.log(values);
  let firstLetter = findFirstLetter(map);
- console.log('this is first letter');
- console.log(firstLetter);
+ // console.log('this is first letter');
+ // console.log(firstLetter);
  let equationsToSolve = setLetterToOne(values, firstLetter);
- console.log('this is equations to solve');
- console.log(equationsToSolve);
+ // console.log('this is equations to solve');
+ // console.log(equationsToSolve);
  let newCoefficentObjects = setCoefficentObjectOne(coefficentObjects, firstLetter);
  let i = 0;
  let final = balanceRest(newCoefficentObjects, equationsToSolve, i);
@@ -46,6 +52,8 @@ const balanceRest = function(theCoefficentObjects, theEquationsToSolve, i){
   // console.log('below are the equations to solve');
   // console.log(theEquationsToSolve);
    equationToSolveNext = solveNext(theEquationsToSolve);
+   // console.log('this is the equation to solve next ');
+   // console.log(equationToSolveNext);
    let answer = solve(equationToSolveNext);
    let coefficentObjects2 = setCoefficentObjectValue(theCoefficentObjects, answer.letter, answer.value);
    let equationsToSolve2 = setLetterToValue(theEquationsToSolve, answer.letter, answer.value);
@@ -107,8 +115,8 @@ function dynamicSort(property) {
 //////////////////////////////
 ////////////////////////////
 const solve = function(solveNext){
-  console.log('below is solveNext');
-  console.log(solveNext);
+  // console.log('below is solveNext');
+  // console.log(solveNext);
   let lowerCaseRegex = /[a-z]/;
   let capitalRegex = /[A-Z]/;
   let numRegex = /[0-9]/;
@@ -131,6 +139,8 @@ const solve = function(solveNext){
 } //solve end
 
 const solveNext = function(equationsToSolve){
+  // console.log('this is the array of equations in solveNext');
+  // console.log(equationsToSolve);
     let lowerCaseRegex = /[a-z]/;
   for(let equation of equationsToSolve){
     let letterCount = 0;
@@ -177,8 +187,12 @@ const getMoleculesArray = function(equation){
          let str = '';
          // str += molecule.coefficent;
          for(let atom of molecule.atoms){
+           console.log('these are the subscripts');
+           console.log(atom.subscript);
            str += atom.name;
+           if(atom.subscript !== 1){
            str += atom.subscript;
+          }
            console.log('this is the string' + str);
          }
          let map = {};
@@ -212,7 +226,11 @@ function letterToIndex(arr, letter){
 const finalSolve = function(thingy, weights){
   let next = stringToJSON(thingy, weights);
   let putItIn = createEquations(next);
+  console.log('this is putInIn');
+  console.log(putItIn);
   let mapLCM = balance(putItIn);
+  console.log('this is the mapLCM');
+  console.log(mapLCM);
   let arrLCM = lcmInput(mapLCM);
   let theLCM = findLCM(arrLCM);
   let theNewValues=finalValues(mapLCM, theLCM);
@@ -307,8 +325,8 @@ const findAtomicMass = function(periodicTable, molecule){
 function prettyJSON(obj) { console.log(JSON.stringify(obj, null, 2)); }
 
 const solveFromForm = function(theWeight, equationString, periodicTable){
-  console.log('below is the weight coming into solve ');
-  console.log(theWeight);
+  // console.log('below is the weight coming into solve ');
+  // console.log(theWeight);
   let weightsArray = [];
   for(let weight of theWeight){
   const toStoich = finalSolve(equationString, weight, periodicTable);
@@ -316,8 +334,8 @@ const solveFromForm = function(theWeight, equationString, periodicTable){
   const finalAnswerStoich = getMoleAmount(weight, toStoich, periodicTable, theCount);
   let mapToAppend = {};
   mapToAppend.totalWeight = finalAnswerStoich.totalWeight;
-  console.log('this is the total weight in map to append');
-  console.log(mapToAppend.totalWeight);
+  // console.log('this is the total weight in map to append');
+  // console.log(mapToAppend.totalWeight);
   mapToAppend.finalEquation = finalAnswerStoich;
   weightsArray.push(mapToAppend);
   }

@@ -33,6 +33,7 @@ router.post('/', (req, res, next)=>{
 
   //validations
   const validatedEquation = EquationValidation(equationString);
+  console.log(validatedEquation);
   if(validatedEquation === false){
     return res.status(422).json({
       code: 422,
@@ -53,11 +54,15 @@ router.post('/', (req, res, next)=>{
   //calculation
   const calculation = solveFromForm(theWeight, equationString, periodicTable);
   const moleculesArray = getMoleculesArray(calculation.finalEquation);
+  console.log('below is the molecules array');
+  console.log(moleculesArray);
   newEquation.name = equationString;
 
  // newEquation.molecules = moleculesArray;
  Equation.create(newEquation).then(equation => {
      for(let molecule of moleculesArray){
+       console.log('this is the molecule');
+       console.log(molecule);
        equation.molecules.push(molecule);
      }
       return equation.save();

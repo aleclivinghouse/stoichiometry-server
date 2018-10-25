@@ -6,7 +6,7 @@ let numRegex = /[0-9]/;
 let capitalRegex = /[A-Z]/;
 let lettersRegex = /^[a-zA-Z]+$/;
 let capitalSplit = /(?=[A-Z])/;
-if(!containsEquals(equation) || !containsReactantPlus(equation) || doesNotContainZero(equation)){
+if(!containsEquals(equation) || !containsReactantPlus(equation)){
   return false;
 } else {
   let sides = equation.split("=");
@@ -50,7 +50,7 @@ const containsEquals = function(equation){
      return true;
    }
  }
- console.log('returning false in containsEquals');
+ // console.log('returning false in containsEquals');
  return false;
 }
 
@@ -66,20 +66,11 @@ const containsReactantPlus = function(equation){
  if(plusCount > 0){
    return true;
  } else {
-   console.log('returning false in containsTwoPlusses');
+   // console.log('returning false in containsTwoPlusses');
    return false;
  }
 }
 
-const doesNotContainZero = function(equation){
-  for(let char of equation){
-    if(char === '0'){
-      return true;
-    }
-  }
-  console.log('returning false in containsEquals');
-  return false;
-}
 
 const isInPeriodicTable = function(element){
  const periodicTable = {
